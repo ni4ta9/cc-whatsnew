@@ -33,6 +33,8 @@ Or in natural language:
 - **Standalone HTML Report** — Beautiful single-file report with Japanese-inspired design, no dependencies
 - **Multilingual** — Output language follows your `settings.json` language preference
 - **Template Customizable** — Override the HTML template with your own design
+- **Interactive Setup** — Optionally apply recommended features to `CLAUDE.md` / `settings.json` one by one
+- **Interactive Setup** — Optionally apply recommended features to `CLAUDE.md` / `settings.json` one by one after report generation
 
 ## How it works
 
