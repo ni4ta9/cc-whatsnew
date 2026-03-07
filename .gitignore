@@ -1,0 +1,6 @@
+# Generated report outputs
+cc-whatsnew-*.html
+cc-whatsnew-*.md
+
+# Local Claude settings (may contain personal permissions)
+.claude/

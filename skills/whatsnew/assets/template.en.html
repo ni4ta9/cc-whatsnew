@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'">
+  <title>Claude Code What's New</title>
+  <style>
+    /* ===== VARIABLES ===== */
+    :root {
+      --paper:      #F0EAD8;
+      --paper-dark: #E3D8C4;
+      --ink:        #1B1918;
+      --ink-soft:   #3A3330;
+      --muted:      #8A7A6A;
+      --vermilion:  #BE2B2B;
+      --amber:      #C98C1A;
+      --teal:       #1A6355;
+      --code-bg:    #E8DFC8;
+
+      --content-max: 880px;
+      --content-pad: 52px;
+      --content-pad-sm: 24px;
+
+      --serif: 'Georgia', 'Times New Roman', serif;
+      --sans:  'Inter', 'Helvetica Neue', 'Arial', sans-serif;
+      --mono:  'SFMono-Regular', 'Consolas', 'Menlo', 'Courier New', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    @media print {
+      * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+    }
+
+    body {
+      background-color: var(--paper);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='250' height='250' filter='url(%23n)' opacity='0.055'/%3E%3C/svg%3E");
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 15px;
+      line-height: 1.75;
+    }
+
+    /* ===== HEADER ===== */
+    header {
+      border-bottom: 3px solid var(--ink);
+      padding: 56px var(--content-pad) 44px var(--content-pad);
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    header::after {
+      content: 'PERSONALIZED';
+      position: absolute;
+      top: 22px;
+      right: -22px;
+      font-family: var(--sans);
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 5px;
+      color: var(--vermilion);
+      border: 2px solid var(--vermilion);
+      padding: 5px 18px;
+      transform: rotate(14deg);
+      opacity: 0.55;
+    }
+
+    .header-eyebrow {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 3px;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 18px;
+      display: block;
+    }
+
+    header h1 {
+      font-family: var(--serif);
+      font-size: clamp(40px, 7vw, 72px);
+      font-weight: 900;
+      line-height: 1.05;
+      color: var(--ink);
+      letter-spacing: -2px;
+      margin-bottom: 4px;
+    }
+
+    header h1 .accent { color: var(--vermilion); }
+
+    .header-sub {
+      display: block;
+      font-family: var(--sans);
+      font-size: 14px;
+      color: var(--muted);
+      margin-top: 20px;
+      line-height: 1.5;
+    }
+
+    /* ===== PROFILE ===== */
+    .profile-section {
+      max-width: var(--content-max);
+      margin: 44px auto 0;
+      padding: 0 var(--content-pad);
+    }
+
+    .profile-card {
+      border: 2px solid var(--ink);
+      padding: 26px 32px 24px 28px;
+      background: var(--paper-dark);
+      position: relative;
+    }
+
+    .profile-card::before {
+      content: 'PROFILE';
+      position: absolute;
+      top: -11px;
+      left: 22px;
+      font-family: var(--sans);
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: 4px;
+      background: var(--paper-dark);
+      padding: 0 8px;
+      color: var(--teal);
+    }
+
+    .profile-summary { font-family: var(--serif); font-size: 14px; color: var(--ink-soft); margin-bottom: 16px; line-height: 1.85; }
+    .tag-list { display: flex; flex-wrap: wrap; gap: 6px; }
+    .tag { border: 1.5px solid var(--muted); padding: 3px 10px; font-family: var(--sans); font-size: 11px; color: var(--muted); letter-spacing: 0.3px; background: transparent; }
+
+    /* ===== MAIN ===== */
+    .main { max-width: var(--content-max); margin: 0 auto; padding: 56px var(--content-pad) 60px; }
+    section { margin-bottom: 68px; }
+
+    .section-header { display: flex; align-items: baseline; gap: 14px; margin-bottom: 28px; padding-bottom: 10px; border-bottom: 2px solid var(--ink); }
+    .section-number { font-family: var(--mono); font-size: 10px; letter-spacing: 1px; color: var(--muted); flex-shrink: 0; }
+    .section-title { font-family: var(--serif); font-size: 22px; font-weight: 700; color: var(--ink); flex: 1; }
+
+    /* ===== PICK CARDS ===== */
+    .picks-grid { display: flex; flex-direction: column; gap: 18px; }
+    .pick-card { border: 2px solid var(--ink); position: relative; overflow: hidden; }
+
+    .pick-card.rank-1 { padding: 48px var(--content-pad) 40px 48px; background: var(--ink); border-color: var(--ink); }
+    .pick-card.rank-1::before { content: '01'; position: absolute; right: -8px; bottom: -28px; font-family: var(--serif); font-size: 200px; font-weight: 900; color: rgba(255,255,255,0.05); line-height: 1; pointer-events: none; user-select: none; }
+    .pick-card.rank-2 { padding: 28px 34px 26px 30px; background: var(--paper); }
+    .pick-card.rank-3 { padding: 22px 28px 20px 26px; background: var(--paper); }
+    .pick-card.rank-other { padding: 18px 24px; background: var(--paper); border-color: var(--muted); border-width: 1.5px; }
+
+    .pick-rank { display: block; font-family: var(--sans); font-size: 9px; font-weight: 900; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 10px; }
+    .rank-1 .pick-rank  { color: var(--amber); }
+    .rank-2 .pick-rank  { color: var(--vermilion); }
+    .rank-3 .pick-rank  { color: var(--teal); }
+    .rank-other .pick-rank { color: var(--muted); }
+
+    .pick-title { font-family: var(--serif); margin-bottom: 14px; line-height: 1.2; }
+    .rank-1 .pick-title { font-size: clamp(26px, 4vw, 36px); font-weight: 900; color: var(--paper); letter-spacing: -0.5px; }
+    .rank-2 .pick-title { font-size: 20px; font-weight: 700; color: var(--ink); }
+    .rank-3 .pick-title, .rank-other .pick-title { font-size: 16px; font-weight: 700; color: var(--ink); }
+
+    .pick-reason { font-family: var(--sans); font-size: 13.5px; line-height: 1.8; margin-bottom: 18px; }
+    .rank-1 .pick-reason { color: rgba(240,234,216,0.75); }
+    .rank-2 .pick-reason, .rank-3 .pick-reason, .rank-other .pick-reason { color: var(--muted); }
+    .pick-reason strong { font-weight: 700; }
+    .rank-1 .pick-reason strong { color: var(--amber); }
+    .rank-2 .pick-reason strong, .rank-3 .pick-reason strong { color: var(--teal); }
+    .rank-other .pick-reason strong { color: var(--ink-soft); }
+
+    .pick-howto { padding: 10px 16px; display: flex; align-items: flex-start; gap: 12px; border: 1.5px solid; }
+    .rank-1 .pick-howto { background: rgba(255,255,255,0.06); border-color: rgba(240,234,216,0.25); }
+    .rank-2 .pick-howto, .rank-3 .pick-howto, .rank-other .pick-howto { background: var(--code-bg); border-color: var(--ink); }
+
+    .howto-label { font-family: var(--sans); font-size: 8px; font-weight: 900; letter-spacing: 3px; text-transform: uppercase; white-space: nowrap; padding-top: 3px; }
+    .rank-1 .howto-label { color: var(--amber); }
+    .rank-2 .howto-label, .rank-3 .howto-label, .rank-other .howto-label { color: var(--teal); }
+
+    .pick-howto code { font-family: var(--mono); font-size: 12px; white-space: pre-wrap; word-break: break-all; }
+    .rank-1 .pick-howto code { color: var(--paper); }
+    .rank-2 .pick-howto code, .rank-3 .pick-howto code, .rank-other .pick-howto code { color: var(--ink); }
+
+    /* ===== DETAIL GRID ===== */
+    .detail-grid { border: 2px solid var(--ink); }
+    .detail-card { display: grid; grid-template-columns: 52px 1fr; gap: 0 16px; align-items: start; padding: 18px 22px 18px 18px; border-bottom: 1px solid rgba(27,25,24,0.2); }
+    .detail-card:nth-child(even) { background: var(--paper-dark); }
+    .detail-card:last-child { border-bottom: none; }
+    .detail-num { font-family: var(--serif); font-size: 26px; font-weight: 900; color: transparent; -webkit-text-stroke: 1.5px var(--ink); line-height: 1; padding-top: 5px; text-align: center; opacity: 0.4; }
+    .detail-title { font-family: var(--serif); font-size: 15px; font-weight: 700; color: var(--ink); margin-bottom: 6px; }
+    .detail-title code { font-family: var(--mono); font-size: 13px; background: var(--code-bg); border: 1px solid var(--muted); padding: 0 5px; }
+    .detail-summary { font-family: var(--sans); font-size: 12.5px; color: var(--muted); margin-bottom: 8px; line-height: 1.65; }
+    .detail-merit { font-family: var(--sans); font-size: 13px; color: var(--ink-soft); line-height: 1.7; margin-bottom: 8px; }
+    .detail-merit strong { color: var(--teal); font-weight: 700; }
+    .detail-tip { font-family: var(--mono); font-size: 11px; color: var(--ink); background: var(--code-bg); border-left: 3px solid var(--teal); padding: 7px 12px; white-space: pre-wrap; word-break: break-all; }
+
+    /* ===== RELEASE NOTES ===== */
+    .release-section { margin-bottom: 30px; }
+    .release-version { display: inline-block; font-family: var(--sans); font-size: 11px; font-weight: 900; letter-spacing: 2.5px; text-transform: uppercase; color: var(--paper); background: var(--ink); padding: 5px 14px; margin-bottom: 12px; }
+    .feature-list { list-style: none; border-left: 2.5px solid var(--ink); }
+    .feature-item { display: flex; align-items: flex-start; gap: 10px; font-family: var(--sans); font-size: 13px; line-height: 1.65; padding: 8px 14px; border-bottom: 1px solid rgba(27,25,24,0.12); }
+    .feature-item:last-child { border-bottom: none; }
+
+    .badge { display: inline-block; padding: 1px 8px; font-family: var(--sans); font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: 1.5px; white-space: nowrap; flex-shrink: 0; margin-top: 2px; }
+    .badge.feat    { background: var(--teal);      color: var(--paper); }
+    .badge.fix     { background: var(--vermilion); color: var(--paper); }
+    .badge.improve { background: var(--ink);       color: var(--paper); }
+    .badge.exp     { background: var(--amber);     color: var(--ink); }
+    .badge.other   { border: 1.5px solid var(--muted); color: var(--muted); }
+
+    /* ===== FOOTER ===== */
+    footer { border-top: 3px solid var(--ink); padding: 22px var(--content-pad) 32px; display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px; }
+    .footer-left { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: 1px; }
+    .footer-right { font-family: var(--sans); font-size: 12px; color: var(--muted); }
+    footer a { color: var(--teal); text-decoration: none; border-bottom: 1px solid currentColor; }
+    footer a:hover { color: var(--ink); }
+
+    @media (max-width: 640px) {
+      header { padding: 36px var(--content-pad-sm) 28px; }
+      .profile-section, .main { padding-left: var(--content-pad-sm); padding-right: var(--content-pad-sm); }
+      .pick-howto { flex-direction: column; gap: 6px; }
+      footer { padding: 20px var(--content-pad-sm) 28px; flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <span class="header-eyebrow"></span>
+  <h1><span class="accent">What's</span> New</h1>
+  <span class="header-sub">A personalized report based on your usage patterns</span>
+</header>
+
+<div class="profile-section">
+  <div class="profile-card">
+    <p class="profile-summary"></p>
+    <div class="tag-list"></div>
+  </div>
+</div>
+
+<div class="main">
+
+  <section id="top-picks">
+    <div class="section-header">
+      <span class="section-number">01 ——</span>
+      <h2 class="section-title"></h2>
+    </div>
+    <div class="picks-grid"></div>
+  </section>
+
+  <section id="latest-detail">
+    <div class="section-header">
+      <span class="section-number">02 ——</span>
+      <h2 class="section-title"></h2>
+    </div>
+    <div class="detail-grid"></div>
+  </section>
+
+  <section id="all-features">
+    <div class="section-header">
+      <span class="section-number">03 ——</span>
+      <h2 class="section-title">All Release Notes (Last 3 Versions)</h2>
+    </div>
+    <div id="releases-container"></div>
+  </section>
+
+</div>
+
+<footer>
+  <span class="footer-left"></span>
+  <span class="footer-right">
+    <a href="https://docs.anthropic.com/en/docs/claude-code/release-notes" target="_blank" rel="noopener">Official Release Notes</a>
+    &nbsp;·&nbsp; <span class="footer-credit"></span>
+  </span>
+</footer>
+
+<script id="whatsnew-data" type="application/json">
+__JSON_DATA__
+</script>
+<script>
+(function() {
+  'use strict';
+  var raw = document.getElementById('whatsnew-data').textContent;
+  try { var D = JSON.parse(raw); } catch (e) {
+    document.body.textContent = 'JSON parse error: ' + e.message;
+    return;
+  }
+
+  function esc(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  function md(s) {
+    return esc(s)
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/`(.+?)`/g, '<code>$1</code>');
+  }
+
+  var VALID_BADGES = {feat:1, fix:1, improve:1, exp:1, other:1};
+  function safeBadge(b) { return VALID_BADGES[b] ? b : 'other'; }
+
+  /* -- Header -- */
+  document.title = 'Claude Code What\u2019s New \u2014 ' + D.date;
+  document.querySelector('.header-eyebrow').textContent = 'Claude Code \u2014 ' + D.date;
+
+  /* -- Profile -- */
+  document.querySelector('.profile-summary').textContent = D.profile_summary;
+  document.querySelector('.tag-list').innerHTML =
+    D.profile_tags.map(function(t) { return '<span class="tag">' + esc(t) + '</span>'; }).join('');
+
+  /* -- Picks -- */
+  var RANKS = {1: 'TOP PICK', 2: 'RECOMMENDED', 3: 'NOTABLE'};
+  document.querySelector('#top-picks .section-title').textContent = D.picks_title;
+  document.querySelector('.picks-grid').innerHTML = D.picks.map(function(p) {
+    var r = typeof p.rank === 'number' ? p.rank : 0;
+    var cls = (r >= 1 && r <= 3) ? 'rank-' + r : 'rank-other';
+    return '<div class="pick-card ' + cls + '">'
+      + '<span class="pick-rank">#' + esc(String(r)) + ' ' + esc(RANKS[r] || 'OTHER') + '</span>'
+      + '<h3 class="pick-title">' + md(p.title) + '</h3>'
+      + '<p class="pick-reason"><strong>Why for you:</strong> ' + md(p.reason) + '</p>'
+      + '<div class="pick-howto"><span class="howto-label">GET STARTED</span>'
+      + '<code>' + esc(p.howto) + '</code></div>'
+      + '</div>';
+  }).join('\n');
+
+  /* -- Details -- */
+  document.querySelector('#latest-detail .section-title').textContent =
+    D.latest_version + ' \u2014 Detailed Notes';
+  document.querySelector('.detail-grid').innerHTML = D.details.map(function(item, i) {
+    var num = ('0' + (i + 1)).slice(-2);
+    var tip = item.tip ? '<div class="detail-tip">' + esc(item.tip) + '</div>' : '';
+    return '<div class="detail-card"><div class="detail-num">' + num + '</div><div>'
+      + '<div class="detail-title">' + md(item.title) + '</div>'
+      + '<div class="detail-summary">' + md(item.overview) + '</div>'
+      + '<div class="detail-merit">' + md(item.merit) + '</div>' + tip
+      + '</div></div>';
+  }).join('\n');
+
+  /* -- Releases -- */
+  var BADGE_LABELS = {feat: 'NEW', fix: 'FIX', improve: 'IMPROVE', exp: 'EXPERIMENTAL'};
+  document.getElementById('releases-container').innerHTML = D.releases.map(function(rel) {
+    var items = rel.items.map(function(it) {
+      var b = safeBadge(it.badge);
+      return '<li class="feature-item ' + b + '">'
+        + '<span class="badge ' + b + '">' + esc(BADGE_LABELS[b] || b) + '</span> '
+        + md(it.text) + '</li>';
+    }).join('\n');
+    return '<div class="release-section">'
+      + '<h3 class="release-version">' + esc(rel.version) + ' / ' + esc(rel.date) + '</h3>'
+      + '<ul class="feature-list">' + items + '</ul></div>';
+  }).join('\n');
+
+  /* -- Footer -- */
+  document.querySelector('.footer-left').textContent = 'generated by /whatsnew \u00b7 ' + D.date;
+  var credit = document.querySelector('.footer-credit');
+  var a = document.createElement('a');
+  a.href = 'https://github.com/ni4ta9/cc-whatsnew';
+  a.target = '_blank';
+  a.rel = 'noopener';
+  a.textContent = 'source';
+  credit.textContent = 'Unofficial community plugin \u00b7 ';
+  credit.appendChild(a);
+})();
+</script>
+
+</body>
+</html>
