@@ -32,8 +32,7 @@ Or in natural language:
 - **Categorized Release Notes** — Full changelog with visual badges (New / Improved / Fix / Breaking)
 - **Standalone HTML Report** — Beautiful single-file report with Japanese-inspired design, no dependencies
 - **Multilingual** — Output language follows your `settings.json` language preference
-- **Template Customizable** — Override the HTML template with your own design
-- **Interactive Setup** — Optionally apply recommended features to `CLAUDE.md` / `settings.json` one by one
+- **Template Customizable** — Generate a custom HTML template with `/whatsnew <design instruction>`, or edit manually
 - **Interactive Setup** — Optionally apply recommended features to `CLAUDE.md` / `settings.json` one by one after report generation
 
 ## How it works
@@ -44,6 +43,8 @@ Or in natural language:
 | 2 | Fetches the latest CHANGELOG from GitHub |
 | 3 | Matches features to your profile and ranks by relevance |
 | 4 | Generates a personalized MD + HTML report |
+| 5 | Asks whether to open the HTML report in your browser |
+| 6 | (Optional) Interactively applies recommended features to `CLAUDE.md` / `settings.json` |
 
 > `/insights` must have been run at least once. If no profile exists, the skill will prompt you to run it first.
 
@@ -68,14 +69,26 @@ The report language is determined by the `language` field in `~/.claude/settings
 
 ## Template Customization
 
-You can override the default HTML template:
+You can customize the HTML report template in two ways:
+
+**Option A — Generate with a command** (recommended)
+
+```
+/whatsnew make it dark
+/whatsnew minimal and compact
+/whatsnew washi paper texture style
+```
+
+Claude generates a custom `~/.claude/whatsnew-template.html` based on your design instruction, shows a preview, and lets you refine it interactively.
+
+To revert to default: `/whatsnew reset` (or `rm ~/.claude/whatsnew-template.html`)
+
+**Option B — Edit manually**
 
 ```bash
 cp ~/.claude/skills/whatsnew/assets/template.ja.html ~/.claude/whatsnew-template.html
 # Edit to your liking
 ```
-
-To revert to default: `rm ~/.claude/whatsnew-template.html`
 
 See [skills/whatsnew/README.md](skills/whatsnew/README.md) for full template priority details.
 

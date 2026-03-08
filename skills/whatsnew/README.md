@@ -48,9 +48,20 @@ Uses built-in Claude Code commands internally:
 | Step 1 | `/insights` | Reads your usage profile from `~/.claude/usage-data/report.html` |
 | Step 2 | — | Fetches CHANGELOG via `curl` (GitHub raw) |
 | Step 3–5 | — | Matches features to your profile → generates a personalized MD + HTML report tailored to how you actually use Claude Code |
+| Step 6 | — | (Optional) Interactively applies recommended features to `CLAUDE.md` / `settings.json` |
 
 > **Note**: `/insights` must have been run at least once to generate a usage profile.
 > If no profile exists, the skill will prompt you to run `/insights` first.
+
+### Interactive Setup (Step 6)
+
+After the report is generated, the skill offers to apply recommended features to your configuration:
+
+- Prompts you once whether to proceed
+- Goes through each recommendation one by one (apply / skip / quit)
+- Writes to `CLAUDE.md` or `settings.json` depending on the feature type
+- Non-destructive: only appends; never overwrites existing settings
+- Features with no configuration action (e.g., skill usage tips) show an explanation and skip the apply prompt
 
 ## Output
 
@@ -71,17 +82,32 @@ The report language is determined by the `language` field in `~/.claude/settings
 
 ## Template Customization
 
+### Option A — Generate with a command (recommended)
+
+Pass a design instruction as an argument to `/whatsnew`:
+
+```
+/whatsnew make it dark
+/whatsnew minimal and compact
+/whatsnew washi paper texture style
+/whatsnew reset
+```
+
+Claude generates `~/.claude/whatsnew-template.html` based on the instruction, renders a preview with sample data, and lets you refine interactively. `/whatsnew reset` deletes the custom template and restores the default (equivalent to `rm ~/.claude/whatsnew-template.html`).
+
+### Option B — Edit manually
+
 ```bash
 # Copy and customize the HTML template (language-specific)
 cp ~/.claude/skills/whatsnew/assets/template.ja.html ~/.claude/whatsnew-template.html
 ```
 
+### Template priority
+
 | Priority | Path | Description |
 |----------|------|-------------|
 | 1 (high) | `~/.claude/whatsnew-template.html` | User custom template |
 | 2 (low)  | `assets/template.{lang}.html` (bundled) | Default template (ja/en) |
-
-To revert to default: `rm ~/.claude/whatsnew-template.html`
 
 ## Directory Structure
 
