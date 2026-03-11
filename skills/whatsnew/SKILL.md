@@ -10,8 +10,10 @@ Fetch the latest Claude Code release notes, analyze your usage patterns, and hig
 
 ## Output Files
 
-- `cc-whatsnew-<YYYY-MM-DD>.md` — Markdown report (current directory)
-- `cc-whatsnew-<YYYY-MM-DD>.html` — Standalone HTML report (current directory)
+- `cc-whatsnew-<YYYY-MM-DD>.md` — Markdown report (OUTPUT_DIR, defaults to current directory)
+- `cc-whatsnew-<YYYY-MM-DD>.html` — Standalone HTML report (OUTPUT_DIR, defaults to current directory)
+
+OUTPUT_DIR is read from `whatsnew.outputDir` in `~/.claude/settings.json`. If not set, defaults to `.` (current directory).
 
 ---
 
@@ -288,6 +290,10 @@ Read `~/.claude/settings.json` with the `Read` tool and determine the output lan
 | `"English"` or unset | English | `en` |
 | Other | Corresponding language | BCP47 code |
 
+Also read the `whatsnew.outputDir` field from `~/.claude/settings.json`.
+Set OUTPUT_DIR to this value if present, otherwise set OUTPUT_DIR to `.` (current directory).
+Expand `~` to the absolute home directory path if present (use `echo ~` via Bash).
+
 #### 1b: Collect User Profile (Insight)
 
 Run `test -f ~/.claude/usage-data/report.html && echo "EXISTS" || echo "NOT_FOUND"` via `Bash`.
@@ -372,12 +378,12 @@ Read the selected templates in parallel with `Read`.
 
 **Output file check:**
 
-- Run `test -f cc-whatsnew-<DATE>.md && echo "EXISTS" || echo "NOT_FOUND"` via `Bash`
-- Run `test -f cc-whatsnew-<DATE>.html && echo "EXISTS" || echo "NOT_FOUND"` via `Bash`
+- Run `test -f ${OUTPUT_DIR}/cc-whatsnew-<DATE>.md && echo "EXISTS" || echo "NOT_FOUND"` via `Bash`
+- Run `test -f ${OUTPUT_DIR}/cc-whatsnew-<DATE>.html && echo "EXISTS" || echo "NOT_FOUND"` via `Bash`
 
 If either file already exists, ask with `AskUserQuestion`:
 
-> "The following files already exist: `cc-whatsnew-<DATE>.md` / `cc-whatsnew-<DATE>.html`. Overwrite?"
+> "The following files already exist: `${OUTPUT_DIR}/cc-whatsnew-<DATE>.md` / `${OUTPUT_DIR}/cc-whatsnew-<DATE>.html`. Overwrite?"
 > Choices: `["Overwrite", "Cancel"]`
 
 If cancelled, terminate the skill.
@@ -385,7 +391,7 @@ If cancelled, terminate the skill.
 If overwriting, delete existing files via `Bash` (to make Step 4's Write a fresh create for speed):
 
 ```bash
-rm -f cc-whatsnew-<DATE>.md cc-whatsnew-<DATE>.html
+rm -f ${OUTPUT_DIR}/cc-whatsnew-<DATE>.md ${OUTPUT_DIR}/cc-whatsnew-<DATE>.html
 ```
 
 ---
@@ -440,7 +446,7 @@ After Step 2 completes, execute 3a and 3b **in parallel in the same turn**.
 
 #### 3a: Write MD File
 
-Replace placeholders in the MD template loaded in 1d and `Write`:
+Replace placeholders in the MD template loaded in 1d and `Write` to `${OUTPUT_DIR}/cc-whatsnew-<DATE>.md`:
 
 | Placeholder | Content | Format |
 |---|---|---|
@@ -497,7 +503,7 @@ else
   HTML_TEMPLATE="${CLAUDE_SKILL_DIR}/assets/template.${LANG}.html"
 fi
 awk '/__JSON_DATA__/{system("cat /tmp/whatsnew-data.json");next}1' \
-  "$HTML_TEMPLATE" > "cc-whatsnew-${DATE}.html"
+  "$HTML_TEMPLATE" > "${OUTPUT_DIR}/cc-whatsnew-${DATE}.html"
 ```
 
 > The JavaScript in the HTML template renders page content from the JSON data. The LLM does not need to generate HTML tags directly.
@@ -525,8 +531,8 @@ Done! Personalized report generated.
   Recommended features: <N>
   Release notes entries: <N>
 
-  MD : cc-whatsnew-<DATE>.md
-  HTML: cc-whatsnew-<DATE>.html
+  MD : ${OUTPUT_DIR}/cc-whatsnew-<DATE>.md
+  HTML: ${OUTPUT_DIR}/cc-whatsnew-<DATE>.html
 ```
 
 Then ask with `AskUserQuestion` (**no skipping, no auto-selection**):
@@ -534,7 +540,7 @@ Then ask with `AskUserQuestion` (**no skipping, no auto-selection**):
 > "Open the HTML report in your browser?"
 > Choices: `["Open", "No thanks"]`
 
-- "Open": Run `open cc-whatsnew-<DATE>.html` via `Bash`
+- "Open": Run `open ${OUTPUT_DIR}/cc-whatsnew-<DATE>.html` via `Bash`
 - "No thanks": Do nothing and proceed
 
 Then ask with `AskUserQuestion` (**no skipping, no auto-selection**):
@@ -605,14 +611,6 @@ After the loop ends (all items processed or "Stop here" selected), display a sum
   Skipped: <skipped feature names, comma-separated>
   Modified files: <list of changed file paths>
 ```
-
-Then ask with `AskUserQuestion` (**no skipping, no auto-selection**):
-
-> "Would you like to apply the recommended feature settings now? We can walk through each one and update your CLAUDE.md or settings.json."
-> Choices: `["Apply (one by one)", "Skip"]`
-
-- "Apply": Proceed to Step 6
-- "Skip": Terminate the skill
 
 ---
 

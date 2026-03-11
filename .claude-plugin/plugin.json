@@ -1,7 +1,7 @@
 {
   "name": "whatsnew",
   "description": "Fetches the latest Claude Code release notes and generates a personalized MD + HTML report based on your usage patterns (skills, hooks, usage insights). Supports Japanese, English, and other languages.",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "author": {
     "name": "ni4ta9",
     "url": "https://github.com/ni4ta9"
